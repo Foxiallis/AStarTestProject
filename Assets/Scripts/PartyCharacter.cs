@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
+/* Interface for main things - initialization and following behaviour. Can be used to create, for example, flying units,
+ * non-character party members (that cannot be party leaders), etc. */
 public interface IPartyMemberBehaviour
 {
     void FollowPartyMember(IPartyMemberBehaviour member);
@@ -110,8 +113,9 @@ public class PartyCharacter : MonoBehaviour, IPartyMemberBehaviour
         currentStamina = Mathf.Clamp(currentStamina - stepSize, 0, characterClass.stamina);
     }
 
-
-    public void FollowPartyMember(IPartyMemberBehaviour member)
+    /* While not as full-proof and perfect as each having their own pathfinding behaviour, for our purposes it works well 
+     * and reduces complexity from O(x * n) to O(x) where x is number of nodes that the leader goes through, and n is the number of characters in the party */
+public void FollowPartyMember(IPartyMemberBehaviour member)
     {
         memberToFollow = member;
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PartyManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class PartyManager : MonoBehaviour
     public List<IPartyMemberBehaviour> partyBehaviours; //as Unity doesn't display interface lists in the editor, for some reason
     public List<CharacterClass> classes;
     public List<CharacterSelectButton> characterButtons;
+    public List<Button> saveLoadButtons;
     public AStarPathfinder pathfinder;
     public PartyCharacter partyLeader;
     public List<AStarNode> path;
@@ -30,6 +32,36 @@ public class PartyManager : MonoBehaviour
         partyReachedDestination = true;
         partyBehaviours = new();
         InitializePartyMembers();
+    }
+
+    public List<CharacterData> GetCharacterData()
+    {
+        List<CharacterData> characterData = new();
+
+        for (int i = 0; i < partyBehaviours.Count; i++)
+        {
+            CharacterData cd = new(
+                party[i].transform.position,
+                party[i].transform.rotation,
+                (partyBehaviours[i] as PartyCharacter).characterClass.id,
+                partyLeader == partyBehaviours[i] as PartyCharacter);
+            characterData.Add(cd);
+        }
+
+        return characterData;
+    }
+
+    public void LoadPartyMembersFromSave(List<CharacterData> data)
+    {
+        for (int i = 0; i < data.Count; i++)
+        {
+            partyBehaviours[i].Initialize(classes.Find(charClass => charClass.id == data[i].classID));
+            party[i].transform.SetPositionAndRotation(data[i].position, data[i].rotation);
+            if (data[i].isLeader)
+            {
+                partyLeader = partyBehaviours[i] as PartyCharacter;
+            }
+        }
     }
 
     private void InitializePartyMembers()
@@ -93,6 +125,7 @@ public class PartyManager : MonoBehaviour
     {
         this.interactable = interactable;
         characterButtons.ForEach(button => button.SetButton(interactable));
+        saveLoadButtons.ForEach(button => button.interactable = interactable);
     }
 
     private bool AllMembersReachedDestination()
