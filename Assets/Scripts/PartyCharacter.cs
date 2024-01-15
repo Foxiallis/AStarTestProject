@@ -58,7 +58,8 @@ public class PartyCharacter : MonoBehaviour, IPartyMemberBehaviour
 
     public bool AtFinalDestination()
     {
-        if (memberToFollow == null || memberToFollow.PreviousNodes.Count < 2) return AtDestination();
+        if (currentStamina == 0) return true; //though not at the destination, he can't move further so for the purpose of determining the end of a character's path it returns true
+        if (memberToFollow == null || memberToFollow.PreviousNodes.Count < 2 || previousNodes.Count >= memberToFollow.PreviousNodes.Count - 1) return AtDestination();
         return transform.position == memberToFollow.PreviousNodes[^2].worldPosition;
     }
 
@@ -136,7 +137,7 @@ public class PartyCharacter : MonoBehaviour, IPartyMemberBehaviour
 
     public void Reset()
     {
-        previousNodes = new List<AStarNode>();
+        previousNodes = new List<AStarNode>() { PartyManager.instance.pathfinder.grid.NodeFromWorldPoint(transform.position) };
         memberToFollow = null;
         currentNode = null;
         destination = Vector3.zero;

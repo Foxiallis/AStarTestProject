@@ -15,5 +15,5 @@ MonoBehaviour:
   id: 1
   speed: 10
   turnRate: 5
-  stamina: 10
+  stamina: 50
   pawnMaterial: {fileID: 2100000, guid: 8c83264311205be49b57c9160e33d456, type: 2}

@@ -97,7 +97,7 @@ public class PartyManager : MonoBehaviour
 
     private bool AllMembersReachedDestination()
     {
-        if (path.Count > 0 && partyLeader.transform.position != path[^1].worldPosition) return false;
+        if (path.Count > 0 && partyLeader.transform.position != path[^1].worldPosition && partyLeader.currentStamina != 0) return false;
         foreach(IPartyMemberBehaviour member in partyBehaviours)
         {
             if (!member.AtFinalDestination()) return false;
